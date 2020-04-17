@@ -7,6 +7,14 @@ project(${lib_base_name} VERSION 1.0.0 LANGUAGES CXX)
 OPTION(BUILD_SHARED_LIBS "Build shared libraries" ON)
 OPTION(BUILD_STATIC_LIBS "Build static libraries" ON)
 
+find_package(Boost 1.56 REQUIRED COMPONENTS
+             system filesystem)
+
+# third party
+set(INCLUDE_DIRECTORIES
+  third_party/rapidjson/include/
+)
+
 # Set up source files
 set(SOURCES
   src/Module.cpp
@@ -88,14 +96,14 @@ if(BUILD_SHARED_LIBS)
   set(lib_shared_name_decorated ${lib_shared_name}${JKQtPlotter_LIBNAME_ADDITION})
   set(${lib_base_name}_SHARED_LIBRARY ${lib_shared_name_decorated}  CACHE STRING "name of static library for ${lib_base_name}" FORCE)
   message( STATUS "-- Building ${lib_shared_name}" )
-endif(BUILD_SHARED_LIBS)
+endif()
 
 if(BUILD_STATIC_LIBS)
   set(lib_name ${lib_base_name}Lib)
   set(lib_name_decorated ${lib_name}${JKQtPlotter_LIBNAME_ADDITION})
   set(${lib_base_name}_STATIC_LIBRARY ${lib_name_decorated}  CACHE STRING "name of static library for ${lib_base_name}" FORCE)
   message( STATUS "-- Building ${lib_name}" )
-endif(BUILD_STATIC_LIBS)
+endif()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
@@ -149,7 +157,7 @@ if(BUILD_SHARED_LIBS AND PARENT_RELEASE_DIR)
         COMMAND ${CMAKE_COMMAND} -E make_directory "${PARENT_RELEASE_DIR}/modules/")
     add_custom_command(TARGET ${lib_shared_name} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${lib_shared_name}> "${PARENT_RELEASE_DIR}/modules/")
-endif(BUILD_SHARED_LIBS)
+endif()
 
 # Installation
 if(BUILD_SHARED_LIBS)
